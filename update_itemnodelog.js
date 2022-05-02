@@ -156,16 +156,15 @@ function get_log(data, api_data)
 		}, [0, 0, 0]),
 		area: "'".concat(get_area(api_data).join("-")),
 		items: item_list,
-		recon: is_air_recon(api_data) ? [result_of_recon(api_data)] : []
+		recon: is_air_recon(api_data) ? [result_of_recon(api_data)] : [""]
 	};
 }
 
 //ログのヘッダを出力
-function header(recon)
+function header()
 {
 	var N = max_ship_num();
-	return ["日付", "海域"]
-	.concat(recon ? ["航空偵察"] : [])
+	return ["日付", "海域", "航空偵察"]
 	.concat(Array.apply(null, Array(max_item_num())).reduce(function (prev, x, i) {
 		var t = "アイテム".concat(i + 1);
 		return prev.concat([t.concat(".名前"), t.concat(".個数")]);
@@ -193,14 +192,14 @@ function to_csv(log)
 	.toString();
 }
 
-function write(name, csv, recon)
+function write(name, csv)
 {
 	try {
 		var file = new File(name);
 		var append = file.exists();
 		var w = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), "utf-8")));
 		if (!append) {
-			w.println(header(recon));
+			w.println(header());
 		}
 		w.println(csv);
 		w.close();
@@ -218,9 +217,7 @@ function update(type, data)
 			//7-1はログをとらない
 			if (!equal_area(get_area(api_data), 7, 1)) {
 				var csv = to_csv(get_log(data, api_data));
-				var recon = is_air_recon(api_data);
-				var file = recon ? "air_reconnaissance_log.txt" : "item_node_log.txt";
-				write(file, csv, recon);
+				write("item_node_log.txt", csv);
 			}
 		}
 	}
