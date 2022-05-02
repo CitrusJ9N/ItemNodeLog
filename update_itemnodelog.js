@@ -223,7 +223,5 @@ function update(type, data)
 				write(file, csv, recon);
 			}
 		}
-		var area = get_area(api_data);
-		write("test_log.txt", equal_area(area, 7, 1), false);
 	}
 }
