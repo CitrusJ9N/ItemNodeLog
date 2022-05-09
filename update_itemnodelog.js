@@ -38,8 +38,12 @@ function to_item_name(id)
 //獲得アイテムを返す
 function get_items(api_data)
 {
-	return JSON.parse(api_data.api_itemget)
-	.map(function (x) {
+	var list = JSON.parse(api_data.api_itemget);
+	//たまに配列ではないことがある(航空偵察だけ？)
+	if (!Array.isArray(list)) {
+		list = [list];
+	}
+	return list.map(function (x) {
 		return [to_item_name(x.api_id | 0), x.api_getcount | 0];
 	});
 }
